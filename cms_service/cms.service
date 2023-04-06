@@ -1,0 +1,13 @@
+[Unit]
+Description=Gunicorn Daemon for FastAPI CMS
+After=network.target
+
+
+[Service]
+User=gumaonelove
+WorkingDirectory=/home/gumaonelove/besm/cms_service
+ExecStart=/home/gumaonelove/besm/venv/bin/gunicorn -c /home/gumaonelove/besm/cms_service/gunicorn_conf.py app:app
+
+
+[Install]
+WantedBy=multi-user.target

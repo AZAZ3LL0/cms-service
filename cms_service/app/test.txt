@@ -1,0 +1,1 @@
+<class 'cms_service.app.models.MainPageBanner'>
