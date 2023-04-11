@@ -143,5 +143,9 @@ def get_all_pick_up_points(db: Session = Depends(get_db)):
         point.pop("coordinate_y", None)
         point.pop("time_id", None)
         point.pop("title_id", None)
+        for point in data_dict:
+            for key in point:
+                if isinstance(point[key], (int, float)):
+                    point[key] = str(point[key])
 
     return {"data": pick_up_points}
