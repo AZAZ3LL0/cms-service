@@ -131,7 +131,7 @@ class Coordinate(TakePointBase):
 
 
 class TakePoint(TakePointBase):
-    id: Optional[str]
+    id: str
     address: Optional[str]
     email1: Optional[str]
     email2: Optional[str]
