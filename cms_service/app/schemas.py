@@ -1,10 +1,11 @@
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel
 from datetime import datetime
 
 
 class MainPageBannerDTO_Base(BaseModel):
     title: Optional[str]
+
 
 class MainPageBannerDTO(MainPageBannerDTO_Base):
     id: int
@@ -13,7 +14,6 @@ class MainPageBannerDTO(MainPageBannerDTO_Base):
 
     class Config:
         orm_mode = True
-
 
 
 class BlogDTOBase(BaseModel):
@@ -29,7 +29,6 @@ class BlogDTO(BlogDTOBase):
 
     class Config:
         orm_mode = True
-
 
 
 class PromotionsDTOBase(BaseModel):
@@ -95,6 +94,60 @@ class MetaTagsDTO(MetaTagsBase):
     '''Мета тэги для index.html'''
     title: Optional[str]
     tag: Optional[str]
+
+    class Config:
+        orm_mode = True
+
+
+class DescPointDTO(BaseModel):
+    description: str
+
+
+class Stock(BaseModel):
+    title: str
+    description: List[DescPointDTO]
+
+
+class Time(BaseModel):
+    mon: Optional[str] = None
+    tue: Optional[str] = None
+    wen: Optional[str] = None
+    thu: Optional[str] = None
+    fri: Optional[str] = None
+    sat: Optional[str] = None
+    sun: Optional[str] = None
+
+    class Config:
+        orm_mode = True
+
+
+class TakePointBase(BaseModel):
+    pass
+
+
+class Coordinate(TakePointBase):
+    coordinate_x: str
+    coordinate_y: str
+
+
+class TakePoint(TakePointBase):
+    id: Optional[str]
+    address: Optional[str]
+    email1: Optional[str]
+    email2: Optional[str]
+    phone1: Optional[str]
+    phone2: Optional[str]
+    phone3: Optional[str]
+    time: Optional[Time] = None
+    coordinates: Optional[Coordinate] = None
+    stock: Optional[Stock] = None
+
+    class Config:
+        orm_mode = True
+
+
+class TakePointsDTO(BaseModel):
+    data: List[TakePoint]
 
     class Config:
         orm_mode = True

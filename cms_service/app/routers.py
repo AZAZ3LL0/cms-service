@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from cms_service.app import crud
 from .database import get_db
 from cms_service.app.schemas import MainPageBannerDTO, BlogDTO, HeaderPhonesDTO, PhonesDTO, AddressesDTO, ObjectsDTO, \
-    PromotionsDTO, MetaTagsDTO
+    PromotionsDTO, MetaTagsDTO, TakePoint, Stock, DescPointDTO, Coordinate, TakePointsDTO
 
 router = APIRouter()
 
@@ -118,3 +118,30 @@ def get_id_objects(object_id: int, db: Session = Depends(get_db)):
 def get_id_promotions(promotion_id: int, db: Session = Depends(get_db)):
     db_promotion = crud.get_promotion(db, promotion_id=promotion_id)
     return db_promotion
+
+
+@router.get(path + "/pick_up_point/", tags=["Get all"], response_model=dict)
+def get_all_pick_up_points(db: Session = Depends(get_db)):
+    pick_up_points = crud.get_pick_up_point(db)
+    for point in pick_up_points:
+        point_titles = crud.get_stock_title_by_id(db, point.title_id)
+        c_x = crud.get_coordinate_x(db, point.coordinate_x)
+        c_y = crud.get_coordinate_y(db, point.coordinate_y)
+
+        if len(point_titles) != 0:
+            desc = list(
+                map(lambda x: DescPointDTO(description=x.description), crud.get_stock_desc_by_point_id(db, point.id)))
+            stock = Stock(title=point_titles[0].title, description=desc)
+            coordinates = Coordinate(coordinate_x=c_x[0].coordinate_x, coordinate_y=c_y[0].coordinate_y)
+            point.stock = stock
+            point.coordinates = coordinates
+
+    data_dict = [vars(point) for point in pick_up_points]
+
+    for point in data_dict:
+        point.pop("coordinate_x", None)
+        point.pop("coordinate_y", None)
+        point.pop("time_id", None)
+        point.pop("title_id", None)
+
+    return {"data": pick_up_points}

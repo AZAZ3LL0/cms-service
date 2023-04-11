@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Text, TIMESTAMP
+from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, ForeignKey, Boolean
+from sqlalchemy.orm import relationship
 from .database import Base
 
 
@@ -83,3 +84,58 @@ class MetaTags(Base):
     id = Column(Integer, primary_key=True)
     title = Column(Text)
     tag = Column(Text)
+
+
+class TakePoint(Base):
+    __tablename__ = "pick_up_point"
+
+    id = Column(Integer, primary_key=True)
+    phone1 = Column(Text)
+    phone2 = Column(Text)
+    phone3 = Column(Text)
+    email1 = Column(Text)
+    address = Column(Text)
+    coordinate_x = Column(Text)
+    coordinate_y = Column(Text)
+    email2 = Column(Text)
+
+    time_id = Column(Integer, ForeignKey("pick_up_point_time.id"))
+    title_id = Column(Integer, ForeignKey("pick_up_point_stock_title.id"))
+
+    time = relationship("TimePoint", back_populates="pick_up_point")
+    title = relationship("TitlePoint", back_populates="pick_up_point")
+    desc = relationship("DescPoint", back_populates="pick_up_point")
+
+
+class TimePoint(Base):
+    __tablename__ = "pick_up_point_time"
+
+    id = Column(Integer, primary_key=True)
+    mon = Column(Text)
+    tue = Column(Text)
+    wen = Column(Text)
+    thu = Column(Text)
+    fri = Column(Text)
+    sat = Column(Text)
+    sun = Column(Text)
+
+    pick_up_point = relationship("TakePoint", back_populates="time")
+
+
+class TitlePoint(Base):
+    __tablename__ = "pick_up_point_stock_title"
+
+    id = Column(Integer, primary_key=True)
+    title = Column(Text)
+
+    pick_up_point = relationship("TakePoint", back_populates="title")
+
+
+class DescPoint(Base):
+    __tablename__ = "pick_up_point_stock_description"
+
+    id = Column(Integer, primary_key=True)
+    description = Column(Text)
+
+    take_point_id = Column(Integer, ForeignKey("pick_up_point.id"))
+    pick_up_point = relationship("TakePoint", back_populates="desc")
