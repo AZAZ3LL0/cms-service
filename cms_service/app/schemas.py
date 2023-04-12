@@ -151,3 +151,17 @@ class TakePointsDTO(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class DataReq(BaseModel):
+    body: Optional[str]
+
+    class Config:
+        orm_mode = True
+
+class Requisites(BaseModel):
+    data: Optional[DataReq] = None
+
+    class Config:
+        orm_mode = True
+

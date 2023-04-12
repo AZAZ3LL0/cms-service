@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, ForeignKey
 from sqlalchemy.orm import relationship
 from .database import Base
 
@@ -139,3 +139,48 @@ class DescPoint(Base):
 
     take_point_id = Column(Integer, ForeignKey("pick_up_point.id"))
     pick_up_point = relationship("TakePoint", back_populates="desc")
+
+
+class Requisites(Base):
+    __tablename__ = 'requisites'
+
+    id = Column(Integer, primary_key=True)
+    text = Column(String)
+
+
+class PrivacyPolicy(Base):
+    __tablename__ = 'privacy_policy'
+
+    id = Column(Integer, primary_key=True)
+    text = Column(String)
+
+
+class CdekDeliveryInfo(Base):
+    __tablename__ = 'cdek_delivery_info'
+
+    id = Column(Integer, primary_key=True)
+    description = Column(String)
+
+
+class CourierDeliveryTimeInfo(Base):
+    __tablename__ = 'courier_delivery_time_info'
+
+    id = Column(Integer, primary_key=True)
+    mon = Column(String(30))
+    tue = Column(String(30))
+    wen = Column(String(30))
+    thu = Column(String(30))
+    fri = Column(String(30))
+    sat = Column(String(30))
+    sun = Column(String(30))
+
+    courier_delivery_info = relationship('CourierDeliveryInfo')
+
+
+class CourierDeliveryInfo(Base):
+    __tablename__ = 'courier_delivery_info'
+
+    id = Column(Integer, primary_key=True)
+    description = Column(String)
+
+    courier_delivery_time_info_id = Column(Integer, ForeignKey('courier_delivery_time_info.id'))
