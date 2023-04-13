@@ -159,9 +159,23 @@ class DataReq(BaseModel):
     class Config:
         orm_mode = True
 
+
 class Requisites(BaseModel):
     data: Optional[DataReq] = None
 
     class Config:
         orm_mode = True
 
+
+class DataPrivacyPolicy(BaseModel):
+    body: Optional[str]
+
+    class Config:
+        orm_mode = True
+
+
+class PrivacyPolicy(BaseModel):
+    data: Optional[DataPrivacyPolicy] = None
+
+    class Config:
+        orm_mode = True

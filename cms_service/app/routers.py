@@ -1,11 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-
 from cms_service.app import crud
 from .database import get_db
 from cms_service.app.schemas import MainPageBannerDTO, BlogDTO, HeaderPhonesDTO, PhonesDTO, AddressesDTO, ObjectsDTO, \
-    PromotionsDTO, MetaTagsDTO, Stock, DescPointDTO, Coordinate, Requisites, DataReq
+    PromotionsDTO, MetaTagsDTO, Stock, DescPointDTO, Coordinate, Requisites, DataReq, DataPrivacyPolicy, PrivacyPolicy
 
 router = APIRouter()
 
@@ -72,11 +71,20 @@ def get_all_promotions(db: Session = Depends(get_db)):
 def get_all_meta_tags(db: Session = Depends(get_db)):
     return crud.get_meta_tags(db)
 
+
 @router.get(path + "/requisites/", tags=["Get all"], response_model=list[Requisites])
 def get_all_requisites(db: Session = Depends(get_db)):
     requisites = crud.get_requisites(db)
     requisites_schema_list = [Requisites(data=DataReq(body=req.text)) for req in requisites]
     return requisites_schema_list
+
+
+@router.get(path + "/privacy_policy/", tags=["Get all"], response_model=list[PrivacyPolicy])
+def get_all_privacy_policy(db: Session = Depends(get_db)):
+    privacy_policy = crud.get_privacy_policy(db)
+    privacy_policy_schema_list = [PrivacyPolicy(data=DataPrivacyPolicy(body=pr_pol.text)) for pr_pol in privacy_policy]
+    return privacy_policy_schema_list
+
 
 @router.get(path + "/pick_up_point/", tags=["Get all"], response_model=dict)
 def get_all_pick_up_points(db: Session = Depends(get_db)):
