@@ -4,7 +4,8 @@ from sqlalchemy.orm import Session
 from cms_service.app import crud
 from .database import get_db
 from cms_service.app.schemas import MainPageBannerDTO, BlogDTO, HeaderPhonesDTO, PhonesDTO, AddressesDTO, ObjectsDTO, \
-    PromotionsDTO, MetaTagsDTO, Stock, DescPointDTO, Coordinate, Requisites, DataReq, DataPrivacyPolicy, PrivacyPolicy
+    PromotionsDTO, MetaTagsDTO, Stock, DescPointDTO, Coordinate, Requisites, DataReq, DataPrivacyPolicy, PrivacyPolicy, \
+    DataDelInfo, DelInfo
 
 router = APIRouter()
 
@@ -84,6 +85,13 @@ def get_all_privacy_policy(db: Session = Depends(get_db)):
     privacy_policy = crud.get_privacy_policy(db)
     privacy_policy_schema_list = [PrivacyPolicy(data=DataPrivacyPolicy(body=pr_pol.text)) for pr_pol in privacy_policy]
     return privacy_policy_schema_list
+
+
+@router.get(path + "/cdek_delivery_info/", tags=["Get all"], response_model=list[DelInfo])
+def get_all_cdek_delivery_info(db: Session = Depends(get_db)):
+    del_infos = crud.get_del_info(db)
+    del_info_schema_list = [DelInfo(data=DataDelInfo(description=del_info.description)) for del_info in del_infos]
+    return del_info_schema_list
 
 
 @router.get(path + "/pick_up_point/", tags=["Get all"], response_model=dict)

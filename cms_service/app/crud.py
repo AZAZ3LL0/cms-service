@@ -1,5 +1,5 @@
 from cms_service.app.models import MainPageBanner, Blog, Phones, HeaderPhones, Addresses, Objects, Promotions, \
-    MetaTags, TakePoint, TitlePoint, DescPoint, Requisites, PrivacyPolicy
+    MetaTags, TakePoint, TitlePoint, DescPoint, Requisites, PrivacyPolicy, CdekDeliveryInfo
 
 from sqlalchemy.orm import Session
 
@@ -83,6 +83,10 @@ def get_requisites(db: Session):
 
 def get_privacy_policy(db: Session):
     return db.query(PrivacyPolicy).all()
+
+
+def get_del_info(db: Session):
+    return db.query(CdekDeliveryInfo).all()
 
 
 def get_pick_up_point(db: Session):

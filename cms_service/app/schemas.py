@@ -179,3 +179,17 @@ class PrivacyPolicy(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class DataDelInfo(BaseModel):
+    description: Optional[str]
+
+    class Config:
+        orm_mode = True
+
+
+class DelInfo(BaseModel):
+    data: Optional[DataDelInfo] = None
+
+    class Config:
+        orm_mode = True
