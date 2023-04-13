@@ -193,3 +193,31 @@ class DelInfo(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class Courier_Time_Info(BaseModel):
+    mon: Optional[str] = None
+    tue: Optional[str] = None
+    wen: Optional[str] = None
+    thu: Optional[str] = None
+    fri: Optional[str] = None
+    sat: Optional[str] = None
+    sun: Optional[str] = None
+
+    class Config:
+        orm_mode = True
+
+
+class Courier_Info(BaseModel):
+    description: Optional[str]
+    time: Optional[Courier_Time_Info] = None
+
+    class Config:
+        orm_mode = True
+
+
+class Courier_InfoDTO(BaseModel):
+    data: List[Courier_Info]
+
+    class Config:
+        orm_mode = True

@@ -5,7 +5,8 @@ from cms_service.app import crud
 from .database import get_db
 from cms_service.app.schemas import MainPageBannerDTO, BlogDTO, HeaderPhonesDTO, PhonesDTO, AddressesDTO, ObjectsDTO, \
     PromotionsDTO, MetaTagsDTO, Stock, DescPointDTO, Coordinate, Requisites, DataReq, DataPrivacyPolicy, PrivacyPolicy, \
-    DataDelInfo, DelInfo
+    DataDelInfo, DelInfo, Courier_Time_Info, Courier_Info, Courier_InfoDTO
+from cms_service.app.models import CourierDeliveryTimeInfo
 
 router = APIRouter()
 
@@ -92,6 +93,33 @@ def get_all_cdek_delivery_info(db: Session = Depends(get_db)):
     del_infos = crud.get_del_info(db)
     del_info_schema_list = [DelInfo(data=DataDelInfo(description=del_info.description)) for del_info in del_infos]
     return del_info_schema_list
+
+
+@router.get("/api/courier_delivery_info/", response_model=Courier_InfoDTO)
+async def get_courier_info(db: Session = Depends(get_db)):
+    courier_info_list = crud.get_courier_info(db)
+
+    courier_info_schema_list = []
+    for courier_info in courier_info_list:
+        courier_time_info = db.query(CourierDeliveryTimeInfo).filter_by(
+            id=courier_info.courier_delivery_time_info_id).first()
+        courier_time_info_dict = {
+            "mon": courier_time_info.mon,
+            "tue": courier_time_info.tue,
+            "wen": courier_time_info.wen,
+            "thu": courier_time_info.thu,
+            "fri": courier_time_info.fri,
+            "sat": courier_time_info.sat,
+            "sun": courier_time_info.sun
+        }
+        courier_info_schema = Courier_Info(
+            description=courier_info.description,
+            time=Courier_Time_Info(**courier_time_info_dict)
+        )
+        courier_info_schema_list.append(courier_info_schema)
+
+    courier_info_dto = Courier_InfoDTO(data=courier_info_schema_list)
+    return courier_info_dto
 
 
 @router.get(path + "/pick_up_point/", tags=["Get all"], response_model=dict)

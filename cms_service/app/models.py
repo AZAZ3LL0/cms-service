@@ -162,6 +162,17 @@ class CdekDeliveryInfo(Base):
     description = Column(String)
 
 
+class CourierDeliveryInfo(Base):
+    __tablename__ = 'courier_delivery_info'
+
+    id = Column(Integer, primary_key=True)
+    description = Column(String)
+
+    courier_delivery_time_info_id = Column(Integer, ForeignKey('courier_delivery_time_info.id'))
+
+    time = relationship("CourierDeliveryTimeInfo", back_populates="courier_delivery_info")
+
+
 class CourierDeliveryTimeInfo(Base):
     __tablename__ = 'courier_delivery_time_info'
 
@@ -174,13 +185,5 @@ class CourierDeliveryTimeInfo(Base):
     sat = Column(String(30))
     sun = Column(String(30))
 
-    courier_delivery_info = relationship('CourierDeliveryInfo')
+    courier_delivery_info = relationship('CourierDeliveryInfo', back_populates="time")
 
-
-class CourierDeliveryInfo(Base):
-    __tablename__ = 'courier_delivery_info'
-
-    id = Column(Integer, primary_key=True)
-    description = Column(String)
-
-    courier_delivery_time_info_id = Column(Integer, ForeignKey('courier_delivery_time_info.id'))
