@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, ForeignKey, DateTime, UniqueConstraint
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 from .database import Base
 
 
@@ -187,3 +188,33 @@ class CourierDeliveryTimeInfo(Base):
 
     courier_delivery_info = relationship('CourierDeliveryInfo', back_populates="time")
 
+
+class Vacancy(Base):
+    __tablename__ = 'vacancy'
+
+    id = Column(Integer, primary_key=True)
+    first_phone = Column(String(30))
+    second_phone = Column(String(30))
+    title = Column(Text)
+    email = Column(String(100))
+
+    request_vacancies = relationship('RequestVacancy', back_populates='vacancy')
+
+
+class RequestVacancy(Base):
+    __tablename__ = 'request_vacancy'
+
+    id = Column(Integer, primary_key=True)
+    phone = Column(String(30))
+    name = Column(String(30))
+    lastname = Column(String(30))
+    surname = Column(String(30))
+    email = Column(String(100), unique=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    comment = Column(Text)
+
+    vacancy_id = Column(Integer, ForeignKey('vacancy.id', ondelete='CASCADE'))
+
+    vacancy = relationship('Vacancy', back_populates='request_vacancies')
+
+    __table_args__ = (UniqueConstraint('email', name='_email_name_lastname_uc'),)

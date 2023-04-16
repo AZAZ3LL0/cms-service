@@ -1,12 +1,14 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
-from cms_service.app import crud
 from .database import get_db
+from cms_service.app import crud
+from cms_service.app.models import CourierDeliveryTimeInfo
 from cms_service.app.schemas import MainPageBannerDTO, BlogDTO, HeaderPhonesDTO, PhonesDTO, AddressesDTO, ObjectsDTO, \
     PromotionsDTO, MetaTagsDTO, Stock, DescPointDTO, Coordinate, Requisites, DataReq, DataPrivacyPolicy, PrivacyPolicy, \
-    DataDelInfo, DelInfo, Courier_Time_Info, Courier_Info, Courier_InfoDTO
-from cms_service.app.models import CourierDeliveryTimeInfo
+    DataDelInfo, DelInfo, Courier_Time_Info, Courier_Info, Courier_InfoDTO, VacanciesSchema, DataVacancySchema, \
+    RequestVacancy
 
 router = APIRouter()
 
@@ -95,8 +97,27 @@ def get_all_cdek_delivery_info(db: Session = Depends(get_db)):
     return del_info_schema_list
 
 
-@router.get("/api/courier_delivery_info/", response_model=Courier_InfoDTO)
-async def get_courier_info(db: Session = Depends(get_db)):
+@router.get(path + "/vacancy/", tags=["Get all"], response_model=VacanciesSchema)
+def get_all_vacancy(db: Session = Depends(get_db)):
+    vacancys = crud.get_all_vacancy(db)
+    vacancy_schema_list = [DataVacancySchema(id=vacancy.id,
+                                             first_phone=vacancy.first_phone,
+                                             second_phone=vacancy.second_phone,
+                                             title=vacancy.title,
+                                             email=vacancy.email) for vacancy in vacancys]
+    return VacanciesSchema(data=vacancy_schema_list)
+
+
+@router.post("/request_vacancy/", response_model=RequestVacancy, tags=["Request Vacancy"])
+def add_new_vacancy(vacancy: RequestVacancy, db: Session = Depends(get_db)):
+    try:
+        return crud.add_vacancy(db=db, vacancy=vacancy)
+    except IntegrityError:
+        raise HTTPException(status_code=400, detail="Вы уже оставили заявку")
+
+
+@router.get(path + "/courier_delivery_info/", tags=["Get all"], response_model=Courier_InfoDTO)
+def get_courier_info(db: Session = Depends(get_db)):
     courier_info_list = crud.get_courier_info(db)
 
     courier_info_schema_list = []

@@ -1,8 +1,10 @@
 from cms_service.app.models import MainPageBanner, Blog, Phones, HeaderPhones, Addresses, Objects, Promotions, \
     MetaTags, TakePoint, TitlePoint, DescPoint, Requisites, PrivacyPolicy, CdekDeliveryInfo, CourierDeliveryInfo, \
-    CourierDeliveryTimeInfo
+    Vacancy, RequestVacancy
 
 from sqlalchemy.orm import Session
+from sqlalchemy.orm.exc import NO_STATE
+from fastapi import HTTPException
 
 
 def get_blog(db: Session, blog_id: int):
@@ -112,3 +114,29 @@ def get_coordinate_x(db: Session, coord_x: int):
 
 def get_coordinate_y(db: Session, coord_y: int):
     return db.query(TakePoint).filter(TakePoint.coordinate_y == coord_y).all()
+
+
+def get_all_vacancy(db: Session):
+    return db.query(Vacancy).all()
+
+
+def get_vacancy_by_id(db: Session, vacancy: int):
+    return db.query(Vacancy).filter(Vacancy.id == vacancy.vacancy_id).first()
+
+
+def add_vacancy(db: Session, vacancy: RequestVacancy):
+    vacancy_db = db.query(Vacancy).filter(Vacancy.id == vacancy.vacancy_id).first()
+    if vacancy_db is None:
+        raise HTTPException(status_code=404, detail="Vacancy not found")
+
+    db_vacancy = RequestVacancy(phone=vacancy.phone,
+                                email=vacancy.email,
+                                name=vacancy.name,
+                                lastname=vacancy.lastname,
+                                surname=vacancy.surname,
+                                comment=vacancy.comment,
+                                vacancy=vacancy_db)
+    db.add(db_vacancy)
+    db.commit()
+    db.refresh(db_vacancy)
+    return db_vacancy

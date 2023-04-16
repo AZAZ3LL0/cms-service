@@ -221,3 +221,42 @@ class Courier_InfoDTO(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class DataVacancySchema(BaseModel):
+    id: Optional[str]
+    first_phone: Optional[str]
+    second_phone: Optional[str]
+    title: Optional[str]
+    email: Optional[str]
+
+    class Config:
+        orm_mode = True
+
+
+class VacanciesSchema(BaseModel):
+    data: List[DataVacancySchema]
+
+    class Config:
+        orm_mode = True
+
+
+class RequestVacancyBase(BaseModel):
+    phone: str
+    name: str
+    lastname: str
+    surname: str
+    email: str
+    comment: str
+    vacancy_id: int
+
+
+class RequestVacancyCreate(RequestVacancyBase):
+    pass
+
+
+class RequestVacancy(RequestVacancyBase):
+    pass
+
+    class Config:
+        orm_mode = True
