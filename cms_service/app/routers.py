@@ -8,7 +8,7 @@ from cms_service.app.models import CourierDeliveryTimeInfo
 from cms_service.app.schemas import MainPageBannerDTO, BlogDTO, HeaderPhonesDTO, PhonesDTO, AddressesDTO, ObjectsDTO, \
     PromotionsDTO, MetaTagsDTO, Stock, DescPointDTO, Coordinate, Requisites, DataReq, DataPrivacyPolicy, PrivacyPolicy, \
     DataDelInfo, DelInfo, Courier_Time_Info, Courier_Info, Courier_InfoDTO, VacanciesSchema, DataVacancySchema, \
-    RequestVacancy
+    RequestVacancy, RequestVacancyCreate
 
 router = APIRouter()
 
@@ -111,7 +111,8 @@ def get_all_vacancy(db: Session = Depends(get_db)):
 @router.post("/request_vacancy/", response_model=RequestVacancy, tags=["Request Vacancy"])
 def add_new_vacancy(vacancy: RequestVacancy, db: Session = Depends(get_db)):
     try:
-        return crud.add_vacancy(db=db, vacancy=vacancy)
+        crud.add_vacancy(db=db, vacancy=vacancy)
+        raise HTTPException(status_code=200, detail="Заявка успешно оставлена")
     except IntegrityError:
         raise HTTPException(status_code=400, detail="Вы уже оставили заявку")
 

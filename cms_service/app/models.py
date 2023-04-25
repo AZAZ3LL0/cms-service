@@ -209,7 +209,7 @@ class RequestVacancy(Base):
     name = Column(String(30))
     lastname = Column(String(30))
     surname = Column(String(30))
-    email = Column(String(100), unique=True)
+    email = Column(String(100))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     comment = Column(Text)
 
@@ -217,4 +217,4 @@ class RequestVacancy(Base):
 
     vacancy = relationship('Vacancy', back_populates='request_vacancies')
 
-    __table_args__ = (UniqueConstraint('email', name='_email_name_lastname_uc'),)
+    __table_args__ = (UniqueConstraint('email', 'phone', 'vacancy_id', name='_email_phone_vacancy_uc'),)

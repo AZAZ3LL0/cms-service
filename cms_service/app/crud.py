@@ -127,7 +127,7 @@ def get_vacancy_by_id(db: Session, vacancy: int):
 def add_vacancy(db: Session, vacancy: RequestVacancy):
     vacancy_db = db.query(Vacancy).filter(Vacancy.id == vacancy.vacancy_id).first()
     if vacancy_db is None:
-        raise HTTPException(status_code=404, detail="Vacancy not found")
+        raise HTTPException(status_code=400, detail="Vacancy not found")
 
     db_vacancy = RequestVacancy(phone=vacancy.phone,
                                 email=vacancy.email,
